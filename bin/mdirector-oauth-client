@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+
+$autoloadLocations = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../autoload.php'
+];
+
+foreach ($autoloadLocations as $autoloadLocation) {
+    if (is_readable($autoloadLocation)) {
+        require_once($autoloadLocation);
+    }
+}
+
+$application = new Application();
+$defaultCommand = new \MDOAuth\OAuth2\MDirector\Command();
+$application->add($defaultCommand);
+$application->setDefaultCommand($defaultCommand->getName());
+$application->run();

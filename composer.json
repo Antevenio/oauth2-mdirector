@@ -14,9 +14,10 @@
             "MDOAuth\\": "src/"
         }
     },
-    "bin": [ "bin/mdirector-client" ],
+    "bin": [ "bin/mdirector-oauth-client" ],
     "require": {
-        "league/oauth2-client": "^2.3"
+        "league/oauth2-client": "^2.3",
+        "symfony/console": "^4.1"
     },
     "require-dev": {
         "antevenio/md-phpqa": "^0.0.21"
