@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+$autoloadLocations = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../autoload.php'
+];
+
+foreach ($autoloadLocations as $autoloadLocation) {
+    if (is_readable($autoloadLocation)) {
+        require_once($autoloadLocation);
+    }
+}
+
+class Script
+{
+    public function run()
+    {
+        $arguments = $GLOBALS['argv'];
+        if (count($arguments) < 7) {
+            echo "Usage: {$arguments[0]} <accessTokenUrl> <companyId> <secret> <uri> <method> <paramsInJson>\n\n";
+            echo "Example: {$arguments[0]} https://app.mdirector.com/oauth2 12345 mysecret " .
+                "https://api.mdirector.com/api_contact get '{\"email\": \"someemail@somedomain.com\"}'\n";
+
+            return -1;
+        }
+        list($_, $accessTokenUrl, $companyId, $secret, $uri, $method, $params) = $arguments;
+        $response = (new \MDOAuth\OAuth2\MDirector($accessTokenUrl, $companyId, $secret))
+            ->setMethod($method)
+            ->setUri($uri)
+            ->setParameters(json_decode($params, true))
+            ->request();
+
+        echo $response->getBody()->getContents();
+        return 0;
+    }
+}
+
+$script = new Script();
+return $script->run();
