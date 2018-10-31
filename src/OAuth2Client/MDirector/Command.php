@@ -1,5 +1,5 @@
 <?php
-namespace MDOAuth\OAuth2\MDirector;
+namespace MDOAuth\OAuth2Client\MDirector;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -48,11 +48,11 @@ class Command extends \Symfony\Component\Console\Command\Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $response = (new \MDOAuth\OAuth2\MDirector(
+        $response = (new Factory())->create(
             $input->getArgument('accessTokenUrl'),
             $input->getArgument('companyId'),
             $input->getArgument('secret')
-        ))
+        )
             ->setMethod($input->getArgument('method'))
             ->setUri($input->getArgument('uri'))
             ->setParameters(json_decode($input->getArgument('parameters'), true))

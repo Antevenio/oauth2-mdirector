@@ -1,7 +1,7 @@
 <?php
-namespace MDOAuth\OAuth2;
+namespace MDOAuth\OAuth2Client;
 
-use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\GenericProvider;
 use MDOAuth\Client;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +14,7 @@ class MDirector implements Client
     protected $consumerKey;
     protected $consumerSecret;
     /**
-     * @var AbstractProvider
+     * @var GenericProvider
      */
     protected $provider;
     /**
@@ -34,7 +34,17 @@ class MDirector implements Client
     ) {
         $this->consumerKey = $consumerKey;
         $this->consumerSecret = $consumerSecret;
-        $this->provider = $this->getProvider($accessTokenUrl);
+
+        $options = [
+            'clientId' => 'webopp',
+            'urlAccessToken' => $accessTokenUrl,
+            'urlAuthorize' => '',
+            'urlResourceOwnerDetails' => ''
+        ];
+
+        $this->provider = new \League\OAuth2\Client\Provider\GenericProvider($options);
+
+        $this->parameters = [];
     }
 
     public function setUri($uri)
@@ -54,19 +64,19 @@ class MDirector implements Client
         $this->parameters = $parameters;
         return $this;
     }
+//
+//    protected function getProvider($accessTokenUrl)
+//    {
+//        $options = [
+//            'clientId' => 'webapp',
+//            'urlAccessToken' => $accessTokenUrl,
+//            'urlAuthorize' => '',
+//            'urlResourceOwnerDetails' => ''
+//        ];
+//        return new GenericProvider($options);
+//    }
 
-    protected function getProvider($accessTokenUrl)
-    {
-        $options = [
-            'clientId' => 'webapp',
-            'urlAccessToken' => $accessTokenUrl,
-            'urlAuthorize' => '',
-            'urlResourceOwnerDetails' => ''
-        ];
-        return new \League\OAuth2\Client\Provider\GenericProvider($options);
-    }
-
-    protected function initAccessToken()
+    protected function prepareAccessToken()
     {
         if (!$this->accessToken) {
             $this->accessToken = $this->provider->getAccessToken(
@@ -86,8 +96,6 @@ class MDirector implements Client
                 ]
             );
         }
-
-        return $this->accessToken;
     }
 
     protected function prepareRequest()
@@ -114,9 +122,13 @@ class MDirector implements Client
         );
     }
 
+    /**
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function request()
     {
-        $this->initAccessToken();
+        $this->prepareAccessToken();
         $this->prepareRequest();
 
         $this->response = $this->provider->getHttpClient()->send($this->request);

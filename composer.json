@@ -14,6 +14,11 @@
             "MDOAuth\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "MDOAuth\\Test\\": "test/"
+        }
+    },
     "bin": [ "bin/mdirector-oauth-client" ],
     "require": {
         "league/oauth2-client": "^2.3",
