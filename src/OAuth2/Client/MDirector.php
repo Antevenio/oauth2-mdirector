@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class MDirector implements Client
 {
+    const CLIENT_ID = 'webapp';
+
     protected $method;
     protected $uri;
     protected $parameters;
@@ -33,7 +35,9 @@ class MDirector implements Client
     ) {
         $this->consumerKey = $consumerKey;
         $this->consumerSecret = $consumerSecret;
-        $this->provider = new \MDOAuth\OAuth2\Client\Provider\MDirector();
+        $this->provider = new \MDOAuth\OAuth2\Client\Provider\MDirector([
+            'clientId' => self::CLIENT_ID
+        ]);
         $this->parameters = [];
     }
 

@@ -12,15 +12,9 @@ class MDirector extends AbstractProvider
 {
     use BearerAuthorizationTrait;
 
-    public function __construct(array $options = [], array $collaborators = [])
-    {
-        $options['clientId'] = 'webapp';
-        parent::__construct($options, $collaborators);
-    }
-
     public function getBaseAuthorizationUrl()
     {
-        return null;
+        return 'https://app.mdirector.com/oauth2-authorize';
     }
 
     public function getBaseAccessTokenUrl(array $params)
@@ -30,7 +24,7 @@ class MDirector extends AbstractProvider
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return null;
+        return 'https://app.mdirector.com/oauth2-api';
     }
 
     protected function getDefaultScopes()
