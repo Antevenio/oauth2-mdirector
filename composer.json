@@ -21,11 +21,12 @@
     },
     "bin": [ "bin/mdirector-oauth-client" ],
     "require": {
+        "ext-json": "*",
         "league/oauth2-client": "^2.3",
-        "symfony/console": "^4.1"
+        "symfony/console": "^3.4"
     },
     "require-dev": {
         "antevenio/md-phpqa": "^0.1.0",
-        "phpunit/phpunit": "^7.4"
+        "phpunit/phpunit": "^5.7"
     }
 }

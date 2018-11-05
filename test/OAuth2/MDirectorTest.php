@@ -4,7 +4,7 @@ namespace MDOAuth\Test\OAuth2;
 use GuzzleHttp\ClientInterface;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessToken;
-use MDOAuth\OAuth2Client\MDirector;
+use MDOAuth\OAuth2\MDirector;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;

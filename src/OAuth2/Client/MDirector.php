@@ -1,5 +1,5 @@
 <?php
-namespace MDOAuth\OAuth2Client;
+namespace MDOAuth\OAuth2\Client;
 
 use League\OAuth2\Client\Provider\GenericProvider;
 use MDOAuth\Client;
@@ -28,22 +28,12 @@ class MDirector implements Client
     protected $accessToken;
 
     public function __construct(
-        $accessTokenUrl,
         $consumerKey,
         $consumerSecret
     ) {
         $this->consumerKey = $consumerKey;
         $this->consumerSecret = $consumerSecret;
-
-        $options = [
-            'clientId' => 'webopp',
-            'urlAccessToken' => $accessTokenUrl,
-            'urlAuthorize' => '',
-            'urlResourceOwnerDetails' => ''
-        ];
-
-        $this->provider = new \League\OAuth2\Client\Provider\GenericProvider($options);
-
+        $this->provider = new \MDOAuth\OAuth2\Client\Provider\MDirector();
         $this->parameters = [];
     }
 
@@ -64,17 +54,6 @@ class MDirector implements Client
         $this->parameters = $parameters;
         return $this;
     }
-//
-//    protected function getProvider($accessTokenUrl)
-//    {
-//        $options = [
-//            'clientId' => 'webapp',
-//            'urlAccessToken' => $accessTokenUrl,
-//            'urlAuthorize' => '',
-//            'urlResourceOwnerDetails' => ''
-//        ];
-//        return new GenericProvider($options);
-//    }
 
     protected function prepareAccessToken()
     {
