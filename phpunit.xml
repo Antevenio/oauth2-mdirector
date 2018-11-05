@@ -7,4 +7,7 @@
             <directory>./src</directory>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-clover" target="/tmp/coverage.xml"/>
+    </logging>
 </phpunit>
