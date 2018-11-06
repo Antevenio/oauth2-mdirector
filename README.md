@@ -1,6 +1,7 @@
 # mdirector-oauth-client-php
 
 [![Travis build](https://api.travis-ci.com/Antevenio/mdirector-oauth-client-php.svg?branch=master)](https://travis-ci.org/Antevenio/mdirector-oauth-client-php)
+[![Coverage Status](https://coveralls.io/repos/github/Antevenio/mdirector-oauth-client-php/badge.svg?branch=master)](https://coveralls.io/github/Antevenio/mdirector-oauth-client-php?branch=master)
 
 OAuth client libraries specific to access MDirector API services, written in PHP.
 
