@@ -17,19 +17,24 @@ As a consumer you may chose to use just the provider or the client wrapper, as i
 
 There is also a command line script to help you test it from the shell.
 
-## Installation
+## Requirements
+The following versions of PHP are supported.
 
+* PHP 5.6
+* PHP 7.0
+* PHP 7.1
+* PHP 7.2
+
+## Installation
 ```
 composer require antevenio/oauth2-mdirector 
 ```
 
 ## Usage
-
 As mentioned before, you can choose to use just the provider or the wrapper around it. 
 Here you can find examples for each case: 
 
 ### 1. MDirector wrapper
-
 ```php
 <?php
 $companyId = 'yourCompanyId';
@@ -47,7 +52,6 @@ echo $response->getBody()->getContents();
 ```
 
 ### 2. Oauth2-client provider
-
 You can find the [oauth2-client](https://github.com/thephpleague/oauth2-client) provider under 
 [OAuth2/Client/Provider](https://github.com/Antevenio/mdirector-oauth-client-php/tree/master/src/OAuth2/Client/Provider), 
 for generic usage instructions please refer to generic usage in the
@@ -75,7 +79,6 @@ try {
 ```
 
 ### 3. Shell script
-
 The library also provides a [console](https://github.com/symfony/console) client so you can 
 call the mdirector api from a shell.
 To do so run:
