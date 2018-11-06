@@ -8,9 +8,10 @@
 
 OAuth client libraries specific to access MDirector API services, written in PHP.
 
-## Description
-As of now, only an OAuth2 implementation for the MDirector email marketing application 
-is provided. 
+This package provides MDirector (http://www.mdirector.com) OAuth 2.0 support for the 
+PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
+
+As of now, only an OAuth2 implementation for the MDirector email marketing application is provided. 
 It is composed of an [oauth2-client](https://github.com/thephpleague/oauth2-client) 
 provider, and a wrapper around it to hide the burden of the required OAuth2 negotiations.
 
