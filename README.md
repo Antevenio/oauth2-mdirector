@@ -36,7 +36,6 @@ Here you can find examples for each case:
 
 ### 1. MDirector wrapper
 ```php
-<?php
 $companyId = 'yourCompanyId';
 $secret = 'yourApiSecret';
 
@@ -61,7 +60,6 @@ MDirector as of now is just providing the **Resource Owner Password Credentials 
 having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
 
 ```php
-<?php
 $provider = new \MDOAuth\OAuth2\Client\Provider\MDirector([
     'clientId'                => 'webapp' // The client ID assigned to you by the provider
 ]);
