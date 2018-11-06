@@ -1,13 +1,20 @@
 <?php
 namespace MDOAuth\OAuth2\Client\MDirector;
 
-use MDOAuth\OAuth2\Client\MDirector;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Command extends \Symfony\Component\Console\Command\Command
 {
+    protected $clientFactory;
+
+    public function __construct(Factory $clientFactory, string $name = null)
+    {
+        $this->clientFactory = $clientFactory;
+        parent::__construct($name);
+    }
+
     protected function configure()
     {
         $this->setName('oauth2:mdirector')
@@ -49,11 +56,12 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $response = (new MDirector(
+        $client = $this->clientFactory->create(
             $input->getArgument('companyId'),
             $input->getArgument('secret')
-        ))
-            ->setMethod($input->getArgument('method'))
+        );
+
+        $response = $client->setMethod($input->getArgument('method'))
             ->setUri($input->getArgument('uri'))
             ->setParameters(json_decode($input->getArgument('parameters'), true))
             ->request();

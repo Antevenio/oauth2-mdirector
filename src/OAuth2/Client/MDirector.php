@@ -2,6 +2,7 @@
 namespace MDOAuth\OAuth2\Client;
 
 use League\OAuth2\Client\Provider\GenericProvider;
+use League\OAuth2\Client\Token\AccessToken;
 use MDOAuth\Client;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -27,17 +28,19 @@ class MDirector implements Client
      * @var ResponseInterface
      */
     protected $response;
+    /**
+     * @var AccessToken
+     */
     protected $accessToken;
 
     public function __construct(
+        \MDOAuth\OAuth2\Client\Provider\MDirector $provider,
         $consumerKey,
         $consumerSecret
     ) {
         $this->consumerKey = $consumerKey;
         $this->consumerSecret = $consumerSecret;
-        $this->provider = new \MDOAuth\OAuth2\Client\Provider\MDirector([
-            'clientId' => self::CLIENT_ID
-        ]);
+        $this->provider = $provider;
         $this->parameters = [];
     }
 
@@ -69,6 +72,7 @@ class MDirector implements Client
                     'password' => $this->consumerSecret
                 ]
             );
+            return;
         }
 
         if ($this->accessToken->hasExpired()) {

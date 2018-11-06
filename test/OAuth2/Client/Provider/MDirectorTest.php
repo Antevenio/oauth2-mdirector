@@ -36,18 +36,13 @@ class MDirectorTest extends TestCase
         $this->baseAuthorizationUrl = 'https://app.mdirector.com/oauth2-authorize';
         $this->baseAccessTokenUrl = 'https://app.mdirector.com/oauth2';
         $this->resourceOwnerDetailsUrl = 'https://app.mdirector.com/oauth2-api';
+        $this->clientId = 'webapp';
 
-        // TODO: Should this be provided by the oauth provider?
-        $this->clientId = 'mock_client_id';
         $this->grantFactory = $this->createMock(GrantFactory::class);
         $this->httpClient = $this->createMock(Client::class);
-        // TODO: Do i have to mock this last one?
 
         $this->sut = new MDirector(
-            [
-                // TODO: Should this be provided by the oauth provider?
-                'clientId' => $this->clientId,
-            ],
+            [],
             [
                 'grantFactory' => $this->grantFactory,
                 'httpClient' => $this->httpClient

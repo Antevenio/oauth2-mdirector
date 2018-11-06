@@ -12,6 +12,14 @@ class MDirector extends AbstractProvider
 {
     use BearerAuthorizationTrait;
 
+    const CLIENT_ID = 'webapp';
+
+    public function __construct(array $options = [], array $collaborators = [])
+    {
+        $this->clientId = self::CLIENT_ID;
+        parent::__construct($options, $collaborators);
+    }
+
     public function getBaseAuthorizationUrl()
     {
         return 'https://app.mdirector.com/oauth2-authorize';

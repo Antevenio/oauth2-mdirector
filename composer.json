@@ -28,6 +28,7 @@
     "require-dev": {
         "antevenio/md-phpqa": "^0.1.0",
         "phpunit/phpunit": "^5.7",
-        "php-coveralls/php-coveralls": "^2.1"
+        "php-coveralls/php-coveralls": "^2.1",
+        "mockery/mockery": "^1.2"
     }
 }
