@@ -2,7 +2,7 @@
 [![Latest Stable Version](https://poser.pugx.org/antevenio/oauth2-mdirector/v/stable)](https://packagist.org/packages/antevenio/oauth2-mdirector)
 [![Total Downloads](https://poser.pugx.org/antevenio/oauth2-mdirector/downloads)](https://packagist.org/packages/antevenio/oauth2-mdirector)
 [![License](https://poser.pugx.org/antevenio/oauth2-mdirector/license)](https://packagist.org/packages/antevenio/oauth2-mdirector)
-[![Travis build](https://api.travis-ci.com/Antevenio/oauth2-mdirector.svg?branch=master)](https://travis-ci.org/Antevenio/oauth2-mdirector)
+[![Travis build](https://api.travis-ci.org/Antevenio/oauth2-mdirector.svg?branch=master)](https://travis-ci.org/Antevenio/oauth2-mdirector)
 [![Coverage Status](https://coveralls.io/repos/github/Antevenio/oauth2-mdirector/badge.svg?branch=master)](https://coveralls.io/github/Antevenio/oauth2-mdirector?branch=master)
 
 OAuth client libraries specific to access MDirector API services, written in PHP.
