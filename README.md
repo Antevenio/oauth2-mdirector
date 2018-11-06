@@ -1,7 +1,7 @@
-# mdirector-oauth-client-php
+# oauth2-mdirector
 
-[![Travis build](https://api.travis-ci.com/Antevenio/mdirector-oauth-client-php.svg?branch=master)](https://travis-ci.org/Antevenio/mdirector-oauth-client-php)
-[![Coverage Status](https://coveralls.io/repos/github/Antevenio/mdirector-oauth-client-php/badge.svg?branch=master)](https://coveralls.io/github/Antevenio/mdirector-oauth-client-php?branch=master)
+[![Travis build](https://api.travis-ci.com/Antevenio/oauth2-mdirector.svg?branch=master)](https://travis-ci.org/Antevenio/oauth2-mdirector)
+[![Coverage Status](https://coveralls.io/repos/github/Antevenio/oauth2-mdirector/badge.svg?branch=master)](https://coveralls.io/github/Antevenio/oauth2-mdirector?branch=master)
 
 OAuth client libraries specific to access MDirector API services, written in PHP.
 
@@ -18,7 +18,7 @@ There is also a command line script to help you test it from the shell.
 ## Installation
 
 ```
-composer require antevenio/mdirector-oauth-client-php 
+composer require antevenio/oauth2-mdirector 
 ```
 
 ## Usage
