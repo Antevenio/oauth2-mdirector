@@ -15,7 +15,8 @@ foreach ($autoloadLocations as $autoloadLocation) {
 }
 
 $application = new Application();
-$defaultCommand = new \MDOAuth\OAuth2\Client\MDirector\Command();
+$defaultCommand = new \MDOAuth\OAuth2\Client\MDirector\Command(
+  new \MDOAuth\OAuth2\Client\MDirector\Factory()
+);
 $application->add($defaultCommand);
-$application->setDefaultCommand($defaultCommand->getName());
 $application->run();
