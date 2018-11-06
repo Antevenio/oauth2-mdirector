@@ -1,4 +1,4 @@
-<phpunit colors="true" syntaxCheck="true" convertErrorsToExceptions="true">
+<phpunit colors="true" convertErrorsToExceptions="true">
     <testsuite name="Application Test Suite">
         <directory>./test/</directory>
     </testsuite>

@@ -5,10 +5,11 @@ namespace MDOAuth\Test\OAuth2\Client\Provider;
 use GuzzleHttp\Client;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Tool\RequestFactory;
 use MDOAuth\OAuth2\Client\Provider\MDirector;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class MDirectorTest extends TestCase
@@ -21,22 +22,26 @@ class MDirectorTest extends TestCase
      * @var GrantFactory | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $grantFactory;
-    protected $requestFactory;
     /**
      * @var Client | \PHPUnit_Framework_MockObject_MockObject
      */
     protected $httpClient;
-
     protected $clientId;
+    protected $baseAuthorizationUrl;
+    protected $baseAccessTokenUrl;
+    protected $resourceOwnerDetailsUrl;
 
     public function setUp()
     {
+        $this->baseAuthorizationUrl = 'https://app.mdirector.com/oauth2-authorize';
+        $this->baseAccessTokenUrl = 'https://app.mdirector.com/oauth2';
+        $this->resourceOwnerDetailsUrl = 'https://app.mdirector.com/oauth2-api';
+
         // TODO: Should this be provided by the oauth provider?
         $this->clientId = 'mock_client_id';
         $this->grantFactory = $this->createMock(GrantFactory::class);
         $this->httpClient = $this->createMock(Client::class);
         // TODO: Do i have to mock this last one?
-        // $this->requestFactory = $this->createMock(RequestFactory::class);
 
         $this->sut = new MDirector(
             [
@@ -45,7 +50,6 @@ class MDirectorTest extends TestCase
             ],
             [
                 'grantFactory' => $this->grantFactory,
-                //'requestFactory' => $this->requestFactory,
                 'httpClient' => $this->httpClient
             ]
         );
@@ -59,7 +63,7 @@ class MDirectorTest extends TestCase
     public function testGetBaseAuthorizationUrl()
     {
         $this->assertEquals(
-            'https://app.mdirector.com/oauth2-authorize',
+            $this->baseAuthorizationUrl,
             $this->sut->getBaseAuthorizationUrl()
         );
     }
@@ -67,7 +71,7 @@ class MDirectorTest extends TestCase
     public function testGetBaseAccessTokenUrl()
     {
         $this->assertEquals(
-            'https://app.mdirector.com/oauth2',
+            $this->baseAccessTokenUrl,
             $this->sut->getBaseAccessTokenUrl([])
         );
     }
@@ -77,7 +81,7 @@ class MDirectorTest extends TestCase
         /** @var \League\OAuth2\Client\Token\AccessToken $accessToken */
         $accessToken = $this->createMock(AccessToken::class);
         $this->assertEquals(
-            'https://app.mdirector.com/oauth2-api',
+            $this->resourceOwnerDetailsUrl,
             $this->sut->getResourceOwnerDetailsUrl($accessToken)
         );
     }
@@ -86,7 +90,54 @@ class MDirectorTest extends TestCase
     {
         $grantName = 'someGrant';
         $options = ['option1' => '1', 'option2' => '2'];
+        $this->setupGrantMock($grantName, $options);
 
+        $accessTokenId = 'aTokenId';
+        $refreshTokenId = 'refreshTokenId';
+        $expiration = 3600;
+
+        $response = $this->createResponse(
+            json_encode(
+                [
+                    'access_token' => $accessTokenId,
+                    'token_type' => 'Bearer',
+                    'refresh_token' => $refreshTokenId,
+                    'expires_in' => $expiration,
+                    'scope' => null
+                ]
+            )
+        );
+
+        $this->setupAccessTokenHttpClientMock($response);
+
+        $token = $this->sut->getAccessToken($grantName, $options);
+        $this->assertEquals($token->getToken(), $accessTokenId);
+        $this->assertEquals($token->getExpires(), time() + $expiration);
+        $this->assertEquals($token->getRefreshToken(), $refreshTokenId);
+        $this->assertNull($token->getResourceOwnerId());
+        $this->assertEquals('Bearer', $token->getValues()['token_type']);
+        $this->assertNull($token->getValues()['scope']);
+    }
+
+    protected function createResponse($body)
+    {
+        /** @var ResponseInterface | \PHPUnit_Framework_MockObject_MockObject $response */
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects($this->any())
+            ->method('getBody')
+            ->will($this->returnValue($body));
+        $response->expects($this->any())
+            ->method('getHeader')
+            ->will($this->returnValue(['content-type' => 'json']));
+        $response->expects($this->any())
+            ->method('getStatusCode')
+            ->will($this->returnValue(200));
+
+        return $response;
+    }
+
+    protected function setupGrantMock($grantName, $options)
+    {
         $grant = $this->createMock(AbstractGrant::class);
         $preparedRequestParameters = [];
         $grant->expects($this->once())
@@ -105,18 +156,91 @@ class MDirectorTest extends TestCase
             ->method('getGrant')
             ->with($this->equalTo($grantName))
             ->will($this->returnValue($grant));
+    }
 
-        $response = $this->createMock(ResponseInterface::class);
-
+    protected function setupAccessTokenHttpClientMock(ResponseInterface $response)
+    {
         $this->httpClient->expects($this->once())
             ->method('send')
-            ->with($this->callback(function ($haha) {
-                //TODO: Should we mock the request preparation?, most probably YES
-                var_dump($haha);
+            ->with($this->callback(function (RequestInterface $request) {
+                $this->assertEquals('POST', $request->getMethod());
+                $this->assertEquals(
+                    $this->baseAccessTokenUrl,
+                    $request->getUri()->__toString()
+                );
+
                 return true;
             }))
             ->will($this->returnValue($response));
+    }
 
+    protected function setupResourceOwnerHttpClientMock(ResponseInterface $response)
+    {
+        $this->httpClient->expects($this->once())
+            ->method('send')
+            ->with($this->callback(function (RequestInterface $request) {
+                $this->assertEquals('GET', $request->getMethod());
+                $this->assertEquals(
+                    $this->resourceOwnerDetailsUrl,
+                    $request->getUri()->__toString()
+                );
+
+                return true;
+            }))
+            ->will($this->returnValue($response));
+    }
+
+    public function testGetAccessTokenShouldThrowIdentityExceptionOnError()
+    {
+        $grantName = 'someGrant';
+        $options = ['option1' => '1', 'option2' => '2'];
+        $this->setupGrantMock($grantName, $options);
+
+        $error = 'someError';
+        $errorDescription = 'someErrorDescription';
+        $code = 123;
+
+        $response = $this->createResponse(
+            json_encode(
+                [
+                    'error' => $error,
+                    'error_description' => $errorDescription,
+                    'code' => $code
+                ]
+            )
+        );
+
+        $this->setupAccessTokenHttpClientMock($response);
+        $this->expectException(IdentityProviderException::class);
+        $this->expectExceptionCode(0);
+        $this->expectExceptionMessage($error . ': ' . $errorDescription);
         $this->sut->getAccessToken($grantName, $options);
+    }
+
+    public function testGetAuthorizationUrl()
+    {
+        $authorizationUrl = $this->sut->getAuthorizationUrl([]);
+        $this->assertRegExp(
+            '/^' . preg_quote($this->baseAuthorizationUrl, '/') . '/',
+            $authorizationUrl
+        );
+    }
+
+    public function testGetResourceOwner()
+    {
+        $accessTokenId = 'aTokenId';
+        $resourceOwnerId = 'resourceOwnerId';
+
+        $accessToken = new AccessToken([
+            'access_token' => $accessTokenId,
+            'resource_owner_id' => $resourceOwnerId
+        ]);
+
+        $response = $this->createResponse(
+            json_encode([])
+        );
+
+        $this->setupResourceOwnerHttpClientMock($response);
+        $this->assertNull($this->sut->getResourceOwner($accessToken));
     }
 }

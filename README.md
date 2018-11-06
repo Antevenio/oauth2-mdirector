@@ -2,7 +2,7 @@
 
 [![Travis build](https://api.travis-ci.com/Antevenio/mdirector-oauth-client-php.svg?branch=master)](https://travis-ci.org/Antevenio/mdirector-oauth-client-php)
 
-OAuth client libraries specific to access MDirector api services, written in PHP.
+OAuth client libraries specific to access MDirector API services, written in PHP.
 
 ## Description
 As of now, only an OAuth2 implementation for the MDirector email marketing application 
@@ -22,8 +22,8 @@ composer require antevenio/mdirector-oauth-client-php
 
 ## Usage
 
-As mentioned before you can choose to use just the provider, or the wrapper around it. 
-Here you can find usage examples of use for each case: 
+As mentioned before, you can choose to use just the provider or the wrapper around it. 
+Here you can find examples for each case: 
 
 ### 1. MDirector wrapper
 
@@ -46,11 +46,12 @@ echo $response->getBody()->getContents();
 ### 2. Oauth2-client provider
 
 You can find the [oauth2-client](https://github.com/thephpleague/oauth2-client) provider under 
-src/OAuth2/Client/Provider, for generic usage instructions please refer to generic usage in the
+[OAuth2/Client/Provider](https://github.com/Antevenio/mdirector-oauth-client-php/tree/master/src/OAuth2/Client/Provider), 
+for generic usage instructions please refer to generic usage in the
 [oauth2-client github project](https://github.com/thephpleague/oauth2-client).
 
 MDirector as of now is just providing the **Resource Owner Password Credentials Grant** grant 
-having a generic clientId named **webapp**. So, here it is an example to get a valid accessToken:
+having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
 
 ```php
 <?php
@@ -72,11 +73,11 @@ try {
 
 ### 3. Shell script
 
-The library also provides with a symfony/console client so you can call the mdirector api from a 
-shell.
+The library also provides a [console](https://github.com/symfony/console) client so you can 
+call the mdirector api from a shell.
 To do so run:
 
 ```
 $ ./bin/mdirector-oauth-client oauth2:mdirector --help    
 ```                                            
-The command will display some self explanatory help.
+The command will display some self explanatory help about its usage and parameters.
