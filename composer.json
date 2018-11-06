@@ -1,5 +1,5 @@
 {
-    "name": "antevenio/mdirector-oauth-client",
+    "name": "antevenio/oauth2-mdirector",
     "description": "Oauth client library specific to access mdirector api services",
     "type": "library",
     "license": "MIT",
