@@ -58,7 +58,7 @@ You can find the [oauth2-client](https://github.com/thephpleague/oauth2-client) 
 for generic usage instructions please refer to generic usage in the
 [oauth2-client github project](https://github.com/thephpleague/oauth2-client).
 
-MDirector as of now is just providing the **Resource Owner Password Credentials Grant** grant 
+MDirector as of now is just providing the **Resource Owner Password Credentials Grant** 
 having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
 
 ```php
