@@ -110,20 +110,6 @@ class MDirectorTest extends TestCase
             ->andReturn($returnedToken);
     }
 
-    protected function setupRefreshTokenMock(AccessToken $accessToken, $returnedToken)
-    {
-        $this->provider->shouldReceive('getAccessToken')
-            ->once()
-            ->ordered()
-            ->with(
-                'refresh_token',
-                [
-                    'refresh_token' => $accessToken->getRefreshToken()
-                ]
-            )
-            ->andReturn($returnedToken);
-    }
-
     public function testRequestShouldNotGetANewAccessTokenIfAlreadyGotOne()
     {
         $accessToken = $this->getForgedAccessToken(time() + 3600);
@@ -167,6 +153,20 @@ class MDirectorTest extends TestCase
             ->request();
 
         $this->sut->request();
+    }
+
+    protected function setupRefreshTokenMock(AccessToken $accessToken, $returnedToken)
+    {
+        $this->provider->shouldReceive('getAccessToken')
+            ->once()
+            ->ordered()
+            ->with(
+                'refresh_token',
+                [
+                    'refresh_token' => $accessToken->getRefreshToken()
+                ]
+            )
+            ->andReturn($returnedToken);
     }
 
     public function testRequestAddsParametersToUriWhenUsingTheGetMethod()

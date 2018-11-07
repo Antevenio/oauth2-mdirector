@@ -62,6 +62,19 @@ class MDirector implements Client
         return $this;
     }
 
+    /**
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function request()
+    {
+        $this->prepareAccessToken();
+        $this->prepareRequest();
+
+        $this->response = $this->provider->getHttpClient()->send($this->request);
+        return $this->response;
+    }
+
     protected function prepareAccessToken()
     {
         if (!$this->accessToken) {
@@ -107,19 +120,6 @@ class MDirector implements Client
             $this->accessToken,
             $requestOptions
         );
-    }
-
-    /**
-     * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function request()
-    {
-        $this->prepareAccessToken();
-        $this->prepareRequest();
-
-        $this->response = $this->provider->getHttpClient()->send($this->request);
-        return $this->response;
     }
 
     public function getLastResponse()

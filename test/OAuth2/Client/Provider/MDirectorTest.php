@@ -114,23 +114,6 @@ class MDirectorTest extends TestCase
         $this->assertNull($token->getValues()['scope']);
     }
 
-    protected function createResponse($body)
-    {
-        /** @var ResponseInterface | \PHPUnit_Framework_MockObject_MockObject $response */
-        $response = $this->createMock(ResponseInterface::class);
-        $response->expects($this->any())
-            ->method('getBody')
-            ->will($this->returnValue($body));
-        $response->expects($this->any())
-            ->method('getHeader')
-            ->will($this->returnValue(['content-type' => 'json']));
-        $response->expects($this->any())
-            ->method('getStatusCode')
-            ->will($this->returnValue(200));
-
-        return $response;
-    }
-
     protected function setupGrantMock($grantName, $options)
     {
         $grant = $this->createMock(AbstractGrant::class);
@@ -153,6 +136,23 @@ class MDirectorTest extends TestCase
             ->will($this->returnValue($grant));
     }
 
+    protected function createResponse($body)
+    {
+        /** @var ResponseInterface | \PHPUnit_Framework_MockObject_MockObject $response */
+        $response = $this->createMock(ResponseInterface::class);
+        $response->expects($this->any())
+            ->method('getBody')
+            ->will($this->returnValue($body));
+        $response->expects($this->any())
+            ->method('getHeader')
+            ->will($this->returnValue(['content-type' => 'json']));
+        $response->expects($this->any())
+            ->method('getStatusCode')
+            ->will($this->returnValue(200));
+
+        return $response;
+    }
+
     protected function setupAccessTokenHttpClientMock(ResponseInterface $response)
     {
         $this->httpClient->expects($this->once())
@@ -161,22 +161,6 @@ class MDirectorTest extends TestCase
                 $this->assertEquals('POST', $request->getMethod());
                 $this->assertEquals(
                     $this->baseAccessTokenUrl,
-                    $request->getUri()->__toString()
-                );
-
-                return true;
-            }))
-            ->will($this->returnValue($response));
-    }
-
-    protected function setupResourceOwnerHttpClientMock(ResponseInterface $response)
-    {
-        $this->httpClient->expects($this->once())
-            ->method('send')
-            ->with($this->callback(function (RequestInterface $request) {
-                $this->assertEquals('GET', $request->getMethod());
-                $this->assertEquals(
-                    $this->resourceOwnerDetailsUrl,
                     $request->getUri()->__toString()
                 );
 
@@ -237,5 +221,21 @@ class MDirectorTest extends TestCase
 
         $this->setupResourceOwnerHttpClientMock($response);
         $this->assertNull($this->sut->getResourceOwner($accessToken));
+    }
+
+    protected function setupResourceOwnerHttpClientMock(ResponseInterface $response)
+    {
+        $this->httpClient->expects($this->once())
+            ->method('send')
+            ->with($this->callback(function (RequestInterface $request) {
+                $this->assertEquals('GET', $request->getMethod());
+                $this->assertEquals(
+                    $this->resourceOwnerDetailsUrl,
+                    $request->getUri()->__toString()
+                );
+
+                return true;
+            }))
+            ->will($this->returnValue($response));
     }
 }
