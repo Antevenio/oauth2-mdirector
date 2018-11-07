@@ -36,7 +36,36 @@ composer require antevenio/oauth2-mdirector
 As mentioned before, you can choose to use just the provider or the wrapper around it. 
 Here you can find examples for each case: 
 
-### 1. MDirector wrapper
+### 1. Oauth2-client provider
+You can find the [oauth2-client](https://github.com/thephpleague/oauth2-client) provider under 
+[OAuth2/Client/Provider](https://github.com/Antevenio/mdirector-oauth-client-php/tree/master/src/OAuth2/Client/Provider), 
+for generic usage instructions please refer to generic usage in the
+[oauth2-client github project](https://github.com/thephpleague/oauth2-client).
+
+MDirector as of now is just providing the **Resource Owner Password Credentials Grant** 
+having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
+
+```php
+$provider = new \MDOAuth\OAuth2\Client\Provider\MDirector();
+
+try {
+    // Try to get an access token using the resource owner password credentials grant.
+    $accessToken = $provider->getAccessToken('password', [
+        'username' => '{yourCompanyId}',
+        'password' => '{yourApiSecret}'
+    ]);
+} catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+    // Failed to get the access token
+    exit($e->getMessage());
+}
+```
+
+When building your requests to the mdirector api, take into account that our api expects the
+parameters to be on the query string for *GET* requests, or being 
+application/x-www-form-urlencoded on the body of the request for any other method 
+i.e. *POST*, *PUT*, *DELETE*... etc.
+
+### 2. Wrapper client
 ```php
 $companyId = 'yourCompanyId';
 $secret = 'yourApiSecret';
@@ -50,32 +79,6 @@ $response = $client->setUri('https://api.mdirector.com/api_contact')
     ->request();
 
 echo $response->getBody()->getContents();
-```
-
-### 2. Oauth2-client provider
-You can find the [oauth2-client](https://github.com/thephpleague/oauth2-client) provider under 
-[OAuth2/Client/Provider](https://github.com/Antevenio/mdirector-oauth-client-php/tree/master/src/OAuth2/Client/Provider), 
-for generic usage instructions please refer to generic usage in the
-[oauth2-client github project](https://github.com/thephpleague/oauth2-client).
-
-MDirector as of now is just providing the **Resource Owner Password Credentials Grant** 
-having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
-
-```php
-$provider = new \MDOAuth\OAuth2\Client\Provider\MDirector([
-    'clientId'                => 'webapp' // The client ID assigned to you by the provider
-]);
-
-try {
-    // Try to get an access token using the resource owner password credentials grant.
-    $accessToken = $provider->getAccessToken('password', [
-        'username' => '{yourCompanyId}',
-        'password' => '{yourApiSecret}'
-    ]);
-} catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-    // Failed to get the access token
-    exit($e->getMessage());
-}
 ```
 
 ### 3. Shell script
