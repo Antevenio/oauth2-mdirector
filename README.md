@@ -70,7 +70,7 @@ i.e. *POST*, *PUT*, *DELETE*... etc.
 $companyId = 'yourCompanyId';
 $secret = 'yourApiSecret';
 
-$client = new \MDOAuth\OAuth2\Client\MDirector($companyId, $secret);
+$client = (new \MDOAuth\OAuth2\Client\MDirector\Factory())->create($companyId, $secret);
 $response = $client->setUri('https://api.mdirector.com/api_contact')
     ->setMethod('get')
     ->setParameters([
