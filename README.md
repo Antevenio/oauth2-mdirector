@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Antevenio/oauth2-mdirector/badge.svg?branch=master)](https://coveralls.io/github/Antevenio/oauth2-mdirector?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f19e715eb520e7bd6a29/maintainability)](https://codeclimate.com/github/Antevenio/oauth2-mdirector/maintainability)
 
-OAuth client libraries specific to access MDirector API services, written in PHP.
+OAuth client library specific to access MDirector API services, written in PHP.
 
 This package provides MDirector (http://www.mdirector.com) OAuth 2.0 support for the 
 PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
