@@ -99,7 +99,7 @@ The command will display some self explanatory help about its usage and paramete
 If you plan on using another client implementation, or have to call the API using a language other than PHP,
 here you'll find the little bits of information you'll need to know:
 
-You'll be asking for access tokens using a **password** grant type, 
+You'll be asking for access tokens with "***webapp***" as your fixed clientId, using a **password** grant type, 
 being your *company id* your **username** and your *secret* your **password**. 
 
 The endpoint for getting such tokens (or refresh them) would be:
