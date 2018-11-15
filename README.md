@@ -66,6 +66,8 @@ application/x-www-form-urlencoded on the body of the request for any other metho
 i.e. *POST*, *PUT*, *DELETE*... etc.
 
 ### 2. Wrapper client
+Here you can find an example of use of our wrapper client.
+Notice you just have to set parameters as an associative array.
 ```php
 $companyId = 'yourCompanyId';
 $secret = 'yourApiSecret';
@@ -90,3 +92,19 @@ To do so run:
 $ ./bin/mdirector-oauth-client oauth2:mdirector --help    
 ```                                            
 The command will display some self explanatory help about its usage and parameters.
+
+
+### 4. Other
+
+If you plan on using another client implementation, or have to call the API using a language other than PHP,
+here you'll find the little bits of information you'll need to know:
+
+You'll be asking for access tokens using a **password** grant type, 
+being your *company id* your **username** and your *secret* your **password**. 
+
+The endpoint for getting such tokens (or refresh them) would be:
+
+https://app.mdirector.com/oauth2
+
+And you'll be carrying your token on a Bearer header in your requests. 
+(https://oauth.net/2/bearer-tokens/)
