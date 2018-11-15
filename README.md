@@ -94,7 +94,7 @@ $ ./bin/mdirector-oauth-client oauth2:mdirector --help
 The command will display some self explanatory help about its usage and parameters.
 
 
-### 4. Other
+### 4. Others
 
 If you plan on using another client implementation, or have to call the API using a language other than PHP,
 here you'll find the little bits of information you'll need to know:
