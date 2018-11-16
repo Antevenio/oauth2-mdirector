@@ -9,8 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class MDirector implements Client
 {
-    const CLIENT_ID = 'webapp';
-
     protected $method;
     protected $uri;
     protected $parameters;

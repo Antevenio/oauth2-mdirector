@@ -66,8 +66,12 @@ application/x-www-form-urlencoded on the body of the request for any other metho
 i.e. *POST*, *PUT*, *DELETE*... etc.
 
 ### 2. Wrapper client
-Here you can find an example of use of our wrapper client.
-Notice you just have to set parameters as an associative array.
+The wrapper client offers a simplified way the API calls. 
+It takes care of obtaining tokens and refreshing them where needed. 
+You just have to set parameters as an associative array, 
+the client knows how to pass them depending on the specified method. 
+
+Example of use:
 ```php
 $companyId = 'yourCompanyId';
 $secret = 'yourApiSecret';
