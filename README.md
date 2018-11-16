@@ -66,7 +66,7 @@ application/x-www-form-urlencoded on the body of the request for any other metho
 i.e. *POST*, *PUT*, *DELETE*... etc.
 
 ### 2. Wrapper client
-The wrapper client offers a simplified way the API calls. 
+The wrapper client offers a simplified way to call the API. 
 It takes care of obtaining tokens and refreshing them where needed. 
 You just have to set parameters as an associative array, 
 the client knows how to pass them depending on the specified method. 
