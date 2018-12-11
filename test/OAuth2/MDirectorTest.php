@@ -205,6 +205,9 @@ class MDirectorTest extends TestCase
                 'http://some.uri/some.path',
                 $accessToken,
                 [
+                    'headers' => [
+                        'Content-Type' => 'application/x-www-form-urlencoded',
+                    ],
                     'body' =>  'a=b&c=d'
                 ]
             )

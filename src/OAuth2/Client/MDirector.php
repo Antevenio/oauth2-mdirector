@@ -107,6 +107,9 @@ class MDirector implements Client
             $requestOptions = array_merge(
                 $requestOptions,
                 [
+                    'headers' => [
+                        'Content-Type' => 'application/x-www-form-urlencoded',
+                    ],
                     'body' => http_build_query($this->parameters)
                 ]
             );
