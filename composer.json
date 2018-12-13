@@ -23,7 +23,7 @@
     "require": {
         "ext-json": "*",
         "league/oauth2-client": "^2.3",
-        "symfony/console": "^3.4"
+        "symfony/console": "*"
     },
     "require-dev": {
         "antevenio/md-phpqa": "^0.1.0",
