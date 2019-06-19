@@ -52,8 +52,10 @@ class CommandTest extends \PHPUnit\Framework\TestCase
             'secret' => '2342',
             'uri' => 'https://go.to/endpoint',
             'method' => 'get',
+            '--useragent' => 'my user agent',
             'parameters' => '{}'
         ];
+
         $input = new ArrayInput($arguments);
         /** @var OutputInterface | Mock $output */
         $output = \Mockery::mock(OutputInterface::class)
@@ -69,22 +71,34 @@ class CommandTest extends \PHPUnit\Framework\TestCase
 
         $this->client->shouldReceive('setMethod')
             ->once()
+            ->ordered('setup')
             ->with($arguments['method'])
             ->andReturn($this->client);
 
         $this->client->shouldReceive('setUri')
             ->once()
+            ->ordered('setup')
             ->with($arguments['uri'])
             ->andReturn($this->client);
 
         $this->client->shouldReceive('setParameters')
             ->once()
+            ->ordered('setup')
             ->with(json_decode($arguments['parameters'], true))
+            ->andReturn($this->client);
+
+
+        $this->client->shouldReceive('setUserAgent')
+            ->once()
+            ->ordered('setup')
+            ->with($arguments['--useragent'])
             ->andReturn($this->client);
 
         $this->client->shouldReceive('request')
             ->once()
+            ->ordered('execute')
             ->andReturn($response);
+
 
         $output->shouldReceive('writeln')
             ->once()

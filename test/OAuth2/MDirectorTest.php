@@ -33,6 +33,8 @@ class MDirectorTest extends TestCase
     protected $accessTokenId;
     protected $refreshTokenId;
 
+    protected $userAgent;
+
     public function setUp()
     {
         $this->key = 'someKey';
@@ -41,6 +43,8 @@ class MDirectorTest extends TestCase
         $this->method = 'someMethod';
         $this->accessTokenId = 'aTokenId';
         $this->refreshTokenId = 'refreshTokenId';
+
+        $this->userAgent = 'my custom user agent';
 
         $this->parameters =  [
             'a' => 'b',
@@ -180,13 +184,23 @@ class MDirectorTest extends TestCase
 
         $this->provider->shouldReceive('getAuthenticatedRequest')
             ->once()
-            ->with('get', 'http://some.uri/some.path?a=b&c=d', $accessToken, [])
+            ->with(
+                'get',
+                'http://some.uri/some.path?a=b&c=d',
+                $accessToken,
+                ['headers' => $this->getUserAgentHeader(MDirector::DEFAULT_USER_AGENT)]
+            )
             ->andReturn($request);
 
         $this->sut->setUri($this->uri)
             ->setMethod('get')
             ->setParameters($this->parameters)
             ->request();
+    }
+
+    protected function getUserAgentHeader($userAgent)
+    {
+        return ['User-Agent' => $userAgent];
     }
 
     public function testRequestAddsParametersToBodyWhenNotUsingTheGetMethod()
@@ -204,12 +218,7 @@ class MDirectorTest extends TestCase
                 'post',
                 'http://some.uri/some.path',
                 $accessToken,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/x-www-form-urlencoded',
-                    ],
-                    'body' =>  'a=b&c=d'
-                ]
+                \Mockery::on([$this, 'assertParametersInBody'])
             )
             ->andReturn($request);
 
@@ -217,6 +226,130 @@ class MDirectorTest extends TestCase
             ->setMethod('post')
             ->setParameters($this->parameters)
             ->request();
+    }
+
+    public function assertParametersInBody($requestOptions)
+    {
+        $this->assertArrayHasKey('headers', $requestOptions);
+        $this->assertArrayHasKey('Content-Type', $requestOptions['headers']);
+        $this->assertEquals(
+            'application/x-www-form-urlencoded',
+            $requestOptions['headers']['Content-Type']
+        );
+
+        return true;
+    }
+
+    public function testRequestSetsDefaultUserAgentHeaderWhenUsingTheGetMethod()
+    {
+        $request = \Mockery::mock(RequestInterface::class)
+            ->shouldIgnoreMissing();
+
+        $this->provider->shouldReceive('getAuthenticatedRequest')
+            ->once()
+            ->with(
+                'get',
+                \Mockery::any(),
+                \Mockery::any(),
+                \Mockery::on([$this, 'assertDefaultUserAgentHeader'])
+            )
+            ->andReturn($request);
+
+        $this->sut->setUri($this->uri)
+            ->setMethod('get')
+            ->setParameters($this->parameters)
+            ->request();
+    }
+
+    public function testRequestSetsCustomUserAgentHeaderWhenUsingTheGetMethod()
+    {
+        $request = \Mockery::mock(RequestInterface::class)
+            ->shouldIgnoreMissing();
+
+        $this->provider->shouldReceive('getAuthenticatedRequest')
+            ->once()
+            ->with(
+                'get',
+                \Mockery::any(),
+                \Mockery::any(),
+                \Mockery::on([$this, 'assertCustomUserAgentHeader'])
+            )
+            ->andReturn($request);
+
+        $this->sut->setUserAgent($this->userAgent);
+        $this->sut->setUri($this->uri)
+            ->setMethod('get')
+            ->setParameters($this->parameters)
+            ->request();
+    }
+
+    public function testRequestSetsDefaultUserAgentHeaderWhenNotUsingTheGetMethod()
+    {
+        $request = \Mockery::mock(RequestInterface::class)
+            ->shouldIgnoreMissing();
+
+        $method = 'some method';
+
+        $this->provider->shouldReceive('getAuthenticatedRequest')
+            ->once()
+            ->with(
+                $method,
+                \Mockery::any(),
+                \Mockery::any(),
+                \Mockery::on([$this, 'assertDefaultUserAgentHeader'])
+            )
+            ->andReturn($request);
+
+        $this->sut->setUri($this->uri)
+            ->setMethod($method)
+            ->setParameters($this->parameters)
+            ->request();
+    }
+
+    public function testRequestSetsCustomUserAgentHeaderWhenNotUsingTheGetMethod()
+    {
+        $request = \Mockery::mock(RequestInterface::class)
+            ->shouldIgnoreMissing();
+
+        $method = 'some method';
+
+        $this->provider->shouldReceive('getAuthenticatedRequest')
+            ->once()
+            ->with(
+                $method,
+                \Mockery::any(),
+                \Mockery::any(),
+                \Mockery::on([$this, 'assertCustomUserAgentHeader'])
+            )
+            ->andReturn($request);
+
+        $this->sut->setUri($this->uri)
+            ->setMethod($method)
+            ->setParameters($this->parameters)
+            ->setUserAgent($this->userAgent)
+            ->request();
+    }
+
+    public function assertDefaultUserAgentHeader($requestOptions)
+    {
+        return $this->assertUserAgentHeader($requestOptions, MDirector::DEFAULT_USER_AGENT);
+    }
+
+    protected function assertUserAgentHeader($requestOptions, $userAgent)
+    {
+        $this->assertArrayHasKey('headers', $requestOptions);
+        $this->assertArrayHasKey('User-Agent', $requestOptions['headers']);
+        $this->assertEquals(
+            $userAgent,
+            $requestOptions['headers']['User-Agent']
+        );
+
+        return true;
+    }
+
+    public function assertCustomUserAgentHeader($requestOptions)
+    {
+        return $this->assertUserAgentHeader($requestOptions, $this->userAgent);
     }
 
     public function testGetLastResponse()

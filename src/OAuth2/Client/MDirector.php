@@ -9,11 +9,14 @@ use Psr\Http\Message\ResponseInterface;
 
 class MDirector implements Client
 {
+    const DEFAULT_USER_AGENT = 'oauth2-mdirector client';
+
     protected $method;
     protected $uri;
     protected $parameters;
     protected $consumerKey;
     protected $consumerSecret;
+    protected $userAgent;
     /**
      * @var GenericProvider
      */
@@ -40,6 +43,7 @@ class MDirector implements Client
         $this->consumerSecret = $consumerSecret;
         $this->provider = $provider;
         $this->parameters = [];
+        $this->userAgent = self::DEFAULT_USER_AGENT;
     }
 
     public function setUri($uri)
@@ -57,6 +61,12 @@ class MDirector implements Client
     public function setParameters($parameters)
     {
         $this->parameters = $parameters;
+        return $this;
+    }
+
+    public function setUserAgent($userAgent)
+    {
+        $this->userAgent = $userAgent;
         return $this;
     }
 
@@ -98,17 +108,22 @@ class MDirector implements Client
 
     protected function prepareRequest()
     {
-        $requestOptions = [];
+        $requestOptions = [
+            'headers' => [
+                'User-Agent' => $this->userAgent
+            ]
+        ];
+
         $uri = $this->uri;
 
         if (strtolower($this->method) == 'get') {
             $uri = $uri . '?' . http_build_query($this->parameters);
         } else {
-            $requestOptions = array_merge(
+            $requestOptions = array_merge_recursive(
                 $requestOptions,
                 [
                     'headers' => [
-                        'Content-Type' => 'application/x-www-form-urlencoded',
+                        'Content-Type' => 'application/x-www-form-urlencoded'
                     ],
                     'body' => http_build_query($this->parameters)
                 ]

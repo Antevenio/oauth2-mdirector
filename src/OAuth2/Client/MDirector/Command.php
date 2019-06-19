@@ -3,6 +3,7 @@ namespace MDOAuth\OAuth2\Client\MDirector;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Command extends \Symfony\Component\Console\Command\Command
@@ -45,6 +46,12 @@ class Command extends \Symfony\Component\Console\Command\Command
                 InputArgument::REQUIRED,
                 'Request parameters in JSON format. i.e.: '.
                 '\'{"email":"email@domain.com", "movil":"+34232423422"}\''
+            )
+            ->addOption(
+                'useragent',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Custom User-Agent to be sent in headers. i.e: MyOauthClient'
             );
     }
 
@@ -60,6 +67,10 @@ class Command extends \Symfony\Component\Console\Command\Command
             $input->getArgument('companyId'),
             $input->getArgument('secret')
         );
+
+        if ($input->hasOption('useragent')) {
+            $client->setUserAgent($input->getOption('useragent'));
+        }
 
         $response = $client->setMethod($input->getArgument('method'))
             ->setUri($input->getArgument('uri'))
