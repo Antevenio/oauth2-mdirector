@@ -70,6 +70,8 @@ The wrapper client offers a simplified way to call the API.
 It takes care of obtaining tokens and refreshing them where needed. 
 You just have to set parameters as an associative array, 
 the client knows how to pass them depending on the specified method. 
+You can also specify a custom user-agent to be send on request headers 
+("*oauth2-mdirector client*" by default)
 
 Example of use:
 ```php
@@ -82,6 +84,7 @@ $response = $client->setUri('https://api.mdirector.com/api_contact')
     ->setParameters([
         'email' => 'myemail@mydomain.org'    
     ])
+    ->setUserAgent('MyOwnUserAgent 1.0')
     ->request();
 
 echo $response->getBody()->getContents();
