@@ -66,7 +66,7 @@ class CommandTest extends \PHPUnit\Framework\TestCase
 
         $this->clientFactory->shouldReceive('create')
             ->once()
-            ->with($arguments['companyId'], $arguments['secret'])
+            ->with($arguments['companyId'], $arguments['secret'], null)
             ->andReturn($this->client);
 
         $this->client->shouldReceive('setMethod')
