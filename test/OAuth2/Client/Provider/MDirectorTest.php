@@ -27,27 +27,25 @@ class MDirectorTest extends TestCase
      */
     protected $httpClient;
     protected $clientId;
-    protected $baseAuthorizationUrl;
-    protected $baseAccessTokenUrl;
-    protected $resourceOwnerDetailsUrl;
+    protected $defaultBaseUrl;
+    protected $customBaseUrl;
+    protected $baseAuthorizationUrlPath;
+    protected $baseAccessTokenUrlPath;
+    protected $resourceOwnerDetailsUrlPath;
 
     public function setUp()
     {
-        $this->baseAuthorizationUrl = 'https://app.mdirector.com/oauth2-authorize';
-        $this->baseAccessTokenUrl = 'https://app.mdirector.com/oauth2';
-        $this->resourceOwnerDetailsUrl = 'https://app.mdirector.com/oauth2-api';
+        $this->defaultBaseUrl = 'https://app.mdirector.com';
+        $this->customBaseUrl = 'https://custom.url.com';
+        $this->baseAuthorizationUrlPath = '/oauth2-authorize';
+        $this->baseAccessTokenUrlPath = '/oauth2';
+        $this->resourceOwnerDetailsUrlPath = '/oauth2-api';
         $this->clientId = 'webapp';
 
         $this->grantFactory = $this->createMock(GrantFactory::class);
         $this->httpClient = $this->createMock(Client::class);
 
-        $this->sut = new MDirector(
-            [],
-            [
-                'grantFactory' => $this->grantFactory,
-                'httpClient' => $this->httpClient
-            ]
-        );
+        $this->sut = $this->getSut([]);
     }
 
     public function testShouldBeCreated()
@@ -58,15 +56,48 @@ class MDirectorTest extends TestCase
     public function testGetBaseAuthorizationUrl()
     {
         $this->assertEquals(
-            $this->baseAuthorizationUrl,
+            $this->defaultBaseUrl . $this->baseAuthorizationUrlPath,
             $this->sut->getBaseAuthorizationUrl()
+        );
+    }
+
+    public function testGetBaseAuthorizationUrlOnCustomBaseUrlSut()
+    {
+        $this->sut = $this->getSut([
+            'baseUrl' => $this->customBaseUrl
+        ]);
+        $this->assertEquals(
+            $this->customBaseUrl . $this->baseAuthorizationUrlPath,
+            $this->sut->getBaseAuthorizationUrl()
+        );
+    }
+
+    protected function getSut($options)
+    {
+        return new MDirector(
+            $options,
+            [
+                'grantFactory' => $this->grantFactory,
+                'httpClient' => $this->httpClient
+            ]
         );
     }
 
     public function testGetBaseAccessTokenUrl()
     {
         $this->assertEquals(
-            $this->baseAccessTokenUrl,
+            $this->defaultBaseUrl . $this->baseAccessTokenUrlPath,
+            $this->sut->getBaseAccessTokenUrl([])
+        );
+    }
+
+    public function testGetBaseAccessTokenUrlOnCustomBaseUrlSut()
+    {
+        $this->sut = $this->getSut([
+            'baseUrl' => $this->customBaseUrl
+        ]);
+        $this->assertEquals(
+            $this->customBaseUrl . $this->baseAccessTokenUrlPath,
             $this->sut->getBaseAccessTokenUrl([])
         );
     }
@@ -76,7 +107,20 @@ class MDirectorTest extends TestCase
         /** @var \League\OAuth2\Client\Token\AccessToken $accessToken */
         $accessToken = $this->createMock(AccessToken::class);
         $this->assertEquals(
-            $this->resourceOwnerDetailsUrl,
+            $this->defaultBaseUrl . $this->resourceOwnerDetailsUrlPath,
+            $this->sut->getResourceOwnerDetailsUrl($accessToken)
+        );
+    }
+
+    public function testGetResourceOwnerDeailsUrlOnCustomBaseUrlSut()
+    {
+        /** @var \League\OAuth2\Client\Token\AccessToken $accessToken */
+        $accessToken = $this->createMock(AccessToken::class);
+        $this->sut = $this->getSut([
+            'baseUrl' => $this->customBaseUrl
+        ]);
+        $this->assertEquals(
+            $this->customBaseUrl . $this->resourceOwnerDetailsUrlPath,
             $this->sut->getResourceOwnerDetailsUrl($accessToken)
         );
     }
@@ -160,7 +204,7 @@ class MDirectorTest extends TestCase
             ->with($this->callback(function (RequestInterface $request) {
                 $this->assertEquals('POST', $request->getMethod());
                 $this->assertEquals(
-                    $this->baseAccessTokenUrl,
+                    $this->defaultBaseUrl . $this->baseAccessTokenUrlPath,
                     $request->getUri()->__toString()
                 );
 
@@ -200,7 +244,7 @@ class MDirectorTest extends TestCase
     {
         $authorizationUrl = $this->sut->getAuthorizationUrl([]);
         $this->assertRegExp(
-            '/^' . preg_quote($this->baseAuthorizationUrl, '/') . '/',
+            '/^' . preg_quote($this->defaultBaseUrl . $this->baseAuthorizationUrlPath, '/') . '/',
             $authorizationUrl
         );
     }
@@ -230,7 +274,7 @@ class MDirectorTest extends TestCase
             ->with($this->callback(function (RequestInterface $request) {
                 $this->assertEquals('GET', $request->getMethod());
                 $this->assertEquals(
-                    $this->resourceOwnerDetailsUrl,
+                    $this->defaultBaseUrl . $this->resourceOwnerDetailsUrlPath,
                     $request->getUri()->__toString()
                 );
 

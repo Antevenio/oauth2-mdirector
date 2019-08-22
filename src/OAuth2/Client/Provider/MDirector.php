@@ -13,26 +13,32 @@ class MDirector extends AbstractProvider
     use BearerAuthorizationTrait;
 
     const CLIENT_ID = 'webapp';
+    const DEFAULT_BASE_URL = 'https://app.mdirector.com';
+
+    protected $baseUrl = false;
 
     public function __construct(array $options = [], array $collaborators = [])
     {
-        $this->clientId = self::CLIENT_ID;
         parent::__construct($options, $collaborators);
+        $this->clientId = self::CLIENT_ID;
+        if (!$this->baseUrl) {
+            $this->baseUrl = self::DEFAULT_BASE_URL;
+        }
     }
 
     public function getBaseAuthorizationUrl()
     {
-        return 'https://app.mdirector.com/oauth2-authorize';
+        return $this->baseUrl . '/oauth2-authorize';
     }
 
     public function getBaseAccessTokenUrl(array $params)
     {
-        return 'https://app.mdirector.com/oauth2';
+        return $this->baseUrl . '/oauth2';
     }
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return 'https://app.mdirector.com/oauth2-api';
+        return $this->baseUrl . '/oauth2-api';
     }
 
     protected function getDefaultScopes()

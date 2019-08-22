@@ -52,6 +52,14 @@ class Command extends \Symfony\Component\Console\Command\Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Custom User-Agent to be sent in headers. i.e: MyOauthClient'
+            )
+            ->addOption(
+                'baseurl',
+                null,
+                InputOption::VALUE_REQUIRED,
+                "Custom base url for oauth endpoints. i.e: https://myown.mdirector.com\n" .
+                "(Just in case you have your own instance of the mdirector suite " .
+                "running somewhere else)"
             );
     }
 
@@ -63,9 +71,12 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $baseUrl = $input->hasOption('baseurl') ? $input->getOption('baseurl') : null;
+
         $client = $this->clientFactory->create(
             $input->getArgument('companyId'),
-            $input->getArgument('secret')
+            $input->getArgument('secret'),
+            $baseUrl
         );
 
         if ($input->hasOption('useragent')) {
