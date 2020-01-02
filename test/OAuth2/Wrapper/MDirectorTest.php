@@ -1,9 +1,8 @@
 <?php
 namespace MDOAuth\Test\OAuth2;
 
-use GuzzleHttp\Client;
 use League\OAuth2\Client\Token\AccessToken;
-use MDOAuth\OAuth2\Client\MDirector;
+use MDOAuth\OAuth2\Wrapper\MDirector;
 use Mockery\Mock;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -27,7 +26,7 @@ class MDirectorTest extends TestCase
      */
     protected $provider;
     /**
-     * @var Client | Mock
+     * @var MDirector | Mock
      */
     protected $httpClient;
     protected $accessTokenId;
@@ -53,7 +52,7 @@ class MDirectorTest extends TestCase
 
         $this->provider = \Mockery::mock(\MDOAuth\OAuth2\Client\Provider\MDirector::class)
             ->shouldIgnoreMissing();
-        $this->httpClient = \Mockery::mock(Client::class)
+        $this->httpClient = \Mockery::mock(MDirector::class)
             ->shouldIgnoreMissing();
         $this->sut = new MDirector($this->provider, $this->key, $this->secret);
 

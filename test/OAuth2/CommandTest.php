@@ -1,10 +1,10 @@
 <?php
 
-namespace MDOAuth\Test\OAuth2\Client\MDirector;
+namespace MDOAuth\Test\OAuth2\Client;
 
-use MDOAuth\OAuth2\Client\MDirector;
-use MDOAuth\OAuth2\Client\MDirector\Command;
-use MDOAuth\OAuth2\Client\MDirector\Factory;
+use MDOAuth\OAuth2\Wrapper\MDirector;
+use MDOAuth\OAuth2\Command;
+use MDOAuth\OAuth2\Wrapper\Factory;
 use Mockery\Mock;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -48,6 +48,7 @@ class CommandTest extends \PHPUnit\Framework\TestCase
     public function testRun()
     {
         $arguments = [
+            'service' => 'mdirector',
             'companyId' => '1231',
             'secret' => '2342',
             'uri' => 'https://go.to/endpoint',
@@ -66,7 +67,7 @@ class CommandTest extends \PHPUnit\Framework\TestCase
 
         $this->clientFactory->shouldReceive('create')
             ->once()
-            ->with($arguments['companyId'], $arguments['secret'], null)
+            ->with($arguments['service'], $arguments['companyId'], $arguments['secret'], null)
             ->andReturn($this->client);
 
         $this->client->shouldReceive('setMethod')

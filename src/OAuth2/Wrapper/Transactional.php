@@ -1,13 +1,12 @@
 <?php
-namespace MDOAuth\OAuth2\Client;
+namespace MDOAuth\OAuth2\Wrapper;
 
-use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessToken;
-use MDOAuth\Client;
+use MDOAuth\OAuth2\Wrapper;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class MDirector implements Client
+class Transactional implements Wrapper
 {
     const DEFAULT_USER_AGENT = 'oauth2-mdirector client';
 
@@ -18,7 +17,7 @@ class MDirector implements Client
     protected $consumerSecret;
     protected $userAgent;
     /**
-     * @var GenericProvider
+     * @var \MDOAuth\OAuth2\Client\Provider\Transactional
      */
     protected $provider;
     /**
@@ -35,7 +34,7 @@ class MDirector implements Client
     protected $accessToken;
 
     public function __construct(
-        \MDOAuth\OAuth2\Client\Provider\MDirector $provider,
+        \MDOAuth\OAuth2\Client\Provider\Transactional $provider,
         $consumerKey,
         $consumerSecret
     ) {
@@ -123,9 +122,10 @@ class MDirector implements Client
                 $requestOptions,
                 [
                     'headers' => [
-                        'Content-Type' => 'application/x-www-form-urlencoded'
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json'
                     ],
-                    'body' => http_build_query($this->parameters)
+                    'body' => json_encode($this->parameters)
                 ]
             );
         }
@@ -146,5 +146,10 @@ class MDirector implements Client
     public function getLastRequest()
     {
         return $this->request;
+    }
+
+    public function getProvider()
+    {
+        return $this->provider;
     }
 }

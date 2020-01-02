@@ -1,6 +1,7 @@
 <?php
-namespace MDOAuth\OAuth2\Client\MDirector;
+namespace MDOAuth\OAuth2;
 
+use MDOAuth\OAuth2\Wrapper\Factory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -8,9 +9,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Command extends \Symfony\Component\Console\Command\Command
 {
+    /**
+     * @var Factory
+     */
     protected $clientFactory;
 
-    public function __construct(Factory $clientFactory, string $name = null)
+    public function __construct(Factory $clientFactory, $name = null)
     {
         $this->clientFactory = $clientFactory;
         parent::__construct($name);
@@ -21,6 +25,11 @@ class Command extends \Symfony\Component\Console\Command\Command
         $this->setName('oauth2:mdirector')
             ->setDescription('Calls an mdirector api endpoint using OAuth2.')
             ->setHelp('Calls an mdirector api endpoint using OAuth2.')
+            ->addArgument(
+                'service',
+                InputArgument::REQUIRED,
+                'Service to use. Must be one of: '.implode(', ', Services::getServiceNames())
+            )
             ->addArgument(
                 'companyId',
                 InputArgument::REQUIRED,
@@ -34,7 +43,7 @@ class Command extends \Symfony\Component\Console\Command\Command
             ->addArgument(
                 'uri',
                 InputArgument::REQUIRED,
-                'MDirector API endpoint. i.e.: https://api.mdirector.com/api_contact'
+                'SimpleClient API endpoint. i.e.: https://api.mdirector.com/api_contact'
             )
             ->addArgument(
                 'method',
@@ -74,6 +83,7 @@ class Command extends \Symfony\Component\Console\Command\Command
         $baseUrl = $input->hasOption('baseurl') ? $input->getOption('baseurl') : null;
 
         $client = $this->clientFactory->create(
+            $input->getArgument('service'),
             $input->getArgument('companyId'),
             $input->getArgument('secret'),
             $baseUrl

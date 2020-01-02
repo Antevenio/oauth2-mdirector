@@ -1,8 +1,8 @@
 <?php
 
-namespace MDOAuth\OAuth2\Client\MDirector;
+namespace MDOAuth\OAuth2\Wrapper\Transactional;
 
-use MDOAuth\OAuth2\Client\MDirector;
+use MDOAuth\OAuth2\Wrapper\Transactional;
 
 class Factory
 {
@@ -14,8 +14,8 @@ class Factory
             $options['baseUrl'] = $baseUrl;
         }
 
-        return new MDirector(
-            new \MDOAuth\OAuth2\Client\Provider\MDirector($options),
+        return new Transactional(
+            new \MDOAuth\OAuth2\Client\Provider\Transactional($options),
             $consumerKey,
             $secret
         );

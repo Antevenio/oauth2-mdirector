@@ -11,11 +11,13 @@ OAuth client library specific to access MDirector API services, written in PHP.
 This package provides MDirector (http://www.mdirector.com) OAuth 2.0 support for the 
 PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
-As of now, only an OAuth2 implementation for the MDirector email marketing application is provided. 
-It is composed of an [oauth2-client](https://github.com/thephpleague/oauth2-client) 
-provider and a wrapper around it to hide the burden of the required OAuth2 negotiations.
+As of now, only an OAuth2 implementation for the MDirector email marketing and transactional 
+applications are provided. 
+The package is composed of two [oauth2-client](https://github.com/thephpleague/oauth2-client) 
+providers (for the email marketing and transactional services) and wrappers around them 
+to hide the burden of the required OAuth2 negotiations.
 
-As a consumer you may choose to use just the provider or the client wrapper, as it suits you best.
+As a consumer you may choose to use just a provider or a client wrapper, as it suits you best.
 
 There is also a command line script to help you test it from the shell.
 
@@ -33,16 +35,16 @@ composer require antevenio/oauth2-mdirector
 ```
 
 ## Usage
-As mentioned before, you can choose to use just the provider or the wrapper around it. 
+As mentioned before, you can choose to use just a provider or the wrapper around it. 
 Here you can find examples for each case: 
 
-### 1. Oauth2-client provider
+### 1. MDirector Oauth2-client provider (email marketing application)
 You can find the [oauth2-client](https://github.com/thephpleague/oauth2-client) provider under 
 [OAuth2/Client/Provider](https://github.com/Antevenio/mdirector-oauth-client-php/tree/master/src/OAuth2/Client/Provider), 
 for generic usage instructions please refer to generic usage in the
 [oauth2-client github project](https://github.com/thephpleague/oauth2-client).
 
-MDirector as of now is just providing the **Resource Owner Password Credentials Grant** 
+The MDirector email marketing provider as of now is just providing the **Resource Owner Password Credentials Grant** 
 having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
 
 ```php
@@ -60,16 +62,57 @@ try {
 }
 ```
 
-When building your requests to the mdirector api, take into account that our api expects the
+When building your requests to the transactional api, take into account that our api expects the
 parameters to be on the query string for *GET* requests, or being 
-application/x-www-form-urlencoded on the body of the request for any other method 
+application/x-www-form-urlencoded on the body of the request for any other method
+
 i.e. *POST*, *PUT*, *DELETE*... etc.
 
-### 2. Wrapper client
-The wrapper client offers a simplified way to call the API. 
-It takes care of obtaining tokens and refreshing them where needed. 
+### 2. Transactional Oauth2-client provider (transactional application)
+You can find the [oauth2-client](https://github.com/thephpleague/oauth2-client) provider under 
+[OAuth2/Client/Provider](https://github.com/Antevenio/mdirector-oauth-client-php/tree/master/src/OAuth2/Client/Provider), 
+for generic usage instructions please refer to generic usage in the
+[oauth2-client github project](https://github.com/thephpleague/oauth2-client).
+
+The Transactional provider as of now is just providing the **Resource Owner Password Credentials Grant** 
+having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
+
+```php
+$provider = new \MDOAuth\OAuth2\Client\Provider\Transactional();
+
+try {
+    // Try to get an access token using the resource owner password credentials grant.
+    $accessToken = $provider->getAccessToken('password', [
+        'username' => '{yourCompanyId}',
+        'password' => '{yourApiSecret}'
+    ]);
+} catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+    // Failed to get the access token
+    exit($e->getMessage());
+}
+```
+
+When building your requests to the mdirector api, take into account that our api expects the
+parameters to be on the query string for *GET* requests, or being 
+application/json encoded on the body of the request for any other method 
+                                                         
+i.e. *POST*, *PUT*, *DELETE*... etc.
+
+The headers:
+```
+Content-Type: application/json
+```
+and
+```
+Accept: application/json
+```
+Are required on every request.
+
+### 3. Wrapper clients
+The wrapper clients offer a simplified way to call the API. 
+They take care of obtaining tokens and refreshing them where needed. 
 You just have to set parameters as an associative array, 
-the client knows how to pass them depending on the specified method. 
+the wrapper knows how to pass them depending on the specified method. 
 You can also specify a custom user-agent to be send on request headers 
 ("*oauth2-mdirector client*" by default)
 
@@ -78,7 +121,7 @@ Example of use:
 $companyId = 'yourCompanyId';
 $secret = 'yourApiSecret';
 
-$client = (new \MDOAuth\OAuth2\Client\MDirector\Factory())->create($companyId, $secret);
+$client = (new \MDOAuth\OAuth2\Wrapper\MDirector\Factory())->create($companyId, $secret);
 $response = $client->setUri('https://api.mdirector.com/api_contact')
     ->setMethod('get')
     ->setParameters([
