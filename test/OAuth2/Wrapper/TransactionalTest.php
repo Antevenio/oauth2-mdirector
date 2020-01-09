@@ -4,14 +4,15 @@ namespace MDOAuth\Test\OAuth2;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use MDOAuth\OAuth2\Wrapper\MDirector;
+use MDOAuth\OAuth2\Wrapper\Transactional;
 use Mockery\Mock;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
-class MDirectorTest extends TestCase
+class TransactionalTest extends TestCase
 {
     /**
-     * @var MDirector
+     * @var Transactional
      */
     protected $sut;
 
@@ -23,7 +24,7 @@ class MDirectorTest extends TestCase
     protected $parameters;
 
     /**
-     * @var \MDOAuth\OAuth2\Client\Provider\MDirector | Mock
+     * @var \MDOAuth\OAuth2\Client\Provider\Transactional | Mock
      */
     protected $provider;
     /**
@@ -51,11 +52,11 @@ class MDirectorTest extends TestCase
             'c' => 'd'
         ];
 
-        $this->provider = \Mockery::mock(\MDOAuth\OAuth2\Client\Provider\MDirector::class)
+        $this->provider = \Mockery::mock(\MDOAuth\OAuth2\Client\Provider\Transactional::class)
             ->shouldIgnoreMissing();
         $this->httpClient = \Mockery::mock(HttpClientInterface::class)
             ->shouldIgnoreMissing();
-        $this->sut = new MDirector($this->provider, $this->key, $this->secret);
+        $this->sut = new Transactional($this->provider, $this->key, $this->secret);
 
         $this->provider->shouldReceive('getHttpClient')
             ->andReturn($this->httpClient);
@@ -68,7 +69,7 @@ class MDirectorTest extends TestCase
 
     public function testShouldBeCreated()
     {
-        $this->assertInstanceOf(MDirector::class, $this->sut);
+        $this->assertInstanceOf(Transactional::class, $this->sut);
     }
 
     public function testRequestShouldGetANewAccessToken()
@@ -233,11 +234,17 @@ class MDirectorTest extends TestCase
         $this->assertArrayHasKey('headers', $requestOptions);
         $this->assertArrayHasKey('Content-Type', $requestOptions['headers']);
         $this->assertEquals(
-            'application/x-www-form-urlencoded',
+            'application/json',
             $requestOptions['headers']['Content-Type']
         );
+        $this->assertArrayHasKey('Accept', $requestOptions['headers']);
+        $this->assertEquals(
+            'application/json',
+            $requestOptions['headers']['Accept']
+        );
+
         $this->assertArrayHasKey('body', $requestOptions);
-        $this->assertEquals($requestOptions['body'], http_build_query($this->parameters));
+        $this->assertEquals($requestOptions['body'], json_encode($this->parameters));
 
         return true;
     }
