@@ -28,7 +28,7 @@ class Command extends \Symfony\Component\Console\Command\Command
             ->addArgument(
                 'service',
                 InputArgument::REQUIRED,
-                'Service to use. Must be one of: '.implode(', ', Services::getServiceNames())
+                'Service to use. Must be one of: '.implode(', ', Services::SERVICES)
             )
             ->addArgument(
                 'companyId',
