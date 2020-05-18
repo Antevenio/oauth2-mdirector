@@ -62,7 +62,7 @@ try {
 }
 ```
 
-When building your requests to the transactional api, take into account that our api expects the
+When building your requests to the mdirector api, take into account that our api expects the
 parameters to be on the query string for *GET* requests, or being 
 application/x-www-form-urlencoded on the body of the request for any other method
 
@@ -92,7 +92,7 @@ try {
 }
 ```
 
-When building your requests to the mdirector api, take into account that our api expects the
+When building your requests to the transactional api, take into account that our api expects the
 parameters to be on the query string for *GET* requests, or being 
 application/json encoded on the body of the request for any other method 
                                                          
