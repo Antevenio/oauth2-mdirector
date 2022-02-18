@@ -2,7 +2,7 @@
 
 namespace MDOAuth\OAuth2\Wrapper\MDirector;
 
-use MDOAuth\OAuth2\Wrapper\MDirector;
+use MDOAuth\OAuth2\Wrapper;
 
 class Factory
 {
@@ -14,7 +14,7 @@ class Factory
             $options['baseUrl'] = $baseUrl;
         }
 
-        return new MDirector(
+        return new Wrapper(
             new \MDOAuth\OAuth2\Client\Provider\MDirector($options),
             $consumerKey,
             $secret

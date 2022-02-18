@@ -10,7 +10,8 @@ class Factory
 {
     const SERVICE_WRAPPER_FACTORIES = [
         Services::MDIRECTOR => Wrapper\MDirector\Factory::class,
-        Services::TRANSACTIONAL => Wrapper\Transactional\Factory::class
+        Services::TRANSACTIONAL => Wrapper\Transactional\Factory::class,
+        Services::PAYMENTS => Wrapper\Payments\Factory::class
     ];
 
     /**
