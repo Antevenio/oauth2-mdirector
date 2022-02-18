@@ -1,6 +1,6 @@
 <?php
 
-namespace MDOAuth\OAuth2\Wrapper\Transactional;
+namespace MDOAuth\OAuth2\Wrapper\Payments;
 
 use MDOAuth\OAuth2\Wrapper;
 
@@ -15,7 +15,7 @@ class Factory
         }
 
         return new Wrapper(
-            new \MDOAuth\OAuth2\Client\Provider\Transactional($options),
+            new \MDOAuth\OAuth2\Client\Provider\Payments($options),
             $consumerKey,
             $secret
         );

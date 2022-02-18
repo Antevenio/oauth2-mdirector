@@ -2,17 +2,17 @@
 namespace MDOAuth\Test\OAuth2;
 
 use GuzzleHttp\ClientInterface as HttpClientInterface;
+use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
-use MDOAuth\OAuth2\Wrapper\MDirector;
-use MDOAuth\OAuth2\Wrapper\Transactional;
+use MDOAuth\OAuth2\Wrapper;
 use Mockery\Mock;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
-class TransactionalTest extends TestCase
+class WrapperTest extends TestCase
 {
     /**
-     * @var Transactional
+     * @var Wrapper
      */
     protected $sut;
 
@@ -24,7 +24,7 @@ class TransactionalTest extends TestCase
     protected $parameters;
 
     /**
-     * @var \MDOAuth\OAuth2\Client\Provider\Transactional | Mock
+     * @var AbstractProvider | Mock
      */
     protected $provider;
     /**
@@ -52,11 +52,11 @@ class TransactionalTest extends TestCase
             'c' => 'd'
         ];
 
-        $this->provider = \Mockery::mock(\MDOAuth\OAuth2\Client\Provider\Transactional::class)
+        $this->provider = \Mockery::mock(AbstractProvider::class)
             ->shouldIgnoreMissing();
         $this->httpClient = \Mockery::mock(HttpClientInterface::class)
             ->shouldIgnoreMissing();
-        $this->sut = new Transactional($this->provider, $this->key, $this->secret);
+        $this->sut = new Wrapper($this->provider, $this->key, $this->secret);
 
         $this->provider->shouldReceive('getHttpClient')
             ->andReturn($this->httpClient);
@@ -69,7 +69,7 @@ class TransactionalTest extends TestCase
 
     public function testShouldBeCreated()
     {
-        $this->assertInstanceOf(Transactional::class, $this->sut);
+        $this->assertInstanceOf(Wrapper::class, $this->sut);
     }
 
     public function testRequestShouldGetANewAccessToken()
@@ -189,7 +189,7 @@ class TransactionalTest extends TestCase
                 'get',
                 'http://some.uri/some.path?a=b&c=d',
                 $accessToken,
-                ['headers' => $this->getUserAgentHeader(MDirector::DEFAULT_USER_AGENT)]
+                ['headers' => $this->getUserAgentHeader(Wrapper::DEFAULT_USER_AGENT)]
             )
             ->andReturn($request);
 
@@ -341,7 +341,7 @@ class TransactionalTest extends TestCase
 
     public function assertDefaultUserAgentHeader($requestOptions)
     {
-        return $this->assertUserAgentHeader($requestOptions, MDirector::DEFAULT_USER_AGENT);
+        return $this->assertUserAgentHeader($requestOptions, Wrapper::DEFAULT_USER_AGENT);
     }
 
     protected function assertUserAgentHeader($requestOptions, $userAgent)
