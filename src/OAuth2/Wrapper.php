@@ -108,13 +108,15 @@ class Wrapper
 
     protected function prepareRequest()
     {
+        $uri = $this->uri;
+
         $requestOptions = [
             'headers' => [
-                'User-Agent' => $this->userAgent
+                'User-Agent' => $this->userAgent,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
             ]
         ];
-
-        $uri = $this->uri;
 
         if (strtolower($this->method) == 'get') {
             $uri = $uri . '?' . http_build_query($this->parameters);
@@ -122,10 +124,6 @@ class Wrapper
             $requestOptions = array_merge_recursive(
                 $requestOptions,
                 [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json'
-                    ],
                     'body' => json_encode($this->parameters)
                 ]
             );
