@@ -189,7 +189,9 @@ class WrapperTest extends TestCase
                 'get',
                 'http://some.uri/some.path?a=b&c=d',
                 $accessToken,
-                ['headers' => $this->getUserAgentHeader(Wrapper::DEFAULT_USER_AGENT)]
+                [
+                    'headers' => $this->getBasicRequestHeaders(Wrapper::DEFAULT_USER_AGENT),
+                ]
             )
             ->andReturn($request);
 
@@ -199,9 +201,13 @@ class WrapperTest extends TestCase
             ->request();
     }
 
-    protected function getUserAgentHeader($userAgent)
+    protected function getBasicRequestHeaders($userAgent)
     {
-        return ['User-Agent' => $userAgent];
+        return [
+            'User-Agent' => $userAgent,
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json'
+        ];
     }
 
     public function testRequestAddsParametersToBodyWhenNotUsingTheGetMethod()

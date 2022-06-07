@@ -99,5 +99,7 @@ class Command extends \Symfony\Component\Console\Command\Command
             ->request();
 
         $output->writeln($response->getBody()->getContents());
+
+        return 0;
     }
 }
