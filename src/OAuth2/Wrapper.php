@@ -83,7 +83,7 @@ class Wrapper
         return $this->response;
     }
 
-    protected function prepareAccessToken()
+    public function prepareAccessToken()
     {
         if (!$this->accessToken) {
             $this->accessToken = $this->provider->getAccessToken(
@@ -93,7 +93,7 @@ class Wrapper
                     'password' => $this->consumerSecret
                 ]
             );
-            return;
+            return $this->accessToken;
         }
 
         if ($this->accessToken->hasExpired()) {
@@ -104,6 +104,8 @@ class Wrapper
                 ]
             );
         }
+
+        return $this->accessToken;
     }
 
     protected function prepareRequest()
