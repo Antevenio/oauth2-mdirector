@@ -45,7 +45,7 @@ for generic usage instructions please refer to generic usage in the
 [oauth2-client github project](https://github.com/thephpleague/oauth2-client).
 
 The MDirector email marketing provider as of now is just providing the **Resource Owner Password Credentials Grant** 
-having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
+having a generic client_id named **webapp**. Here is an example to get a valid accessToken:
 
 ```php
 $provider = new \MDOAuth\OAuth2\Client\Provider\MDirector();
@@ -75,7 +75,7 @@ for generic usage instructions please refer to generic usage in the
 [oauth2-client github project](https://github.com/thephpleague/oauth2-client).
 
 The Transactional provider as of now is just providing the **Resource Owner Password Credentials Grant** 
-having a generic clientId named **webapp**. Here is an example to get a valid accessToken:
+having a generic client_id named **webapp**. Here is an example to get a valid accessToken:
 
 ```php
 $provider = new \MDOAuth\OAuth2\Client\Provider\Transactional();
@@ -149,7 +149,7 @@ The command will display some self explanatory help about its usage and paramete
 If you plan on using another client implementation, or have to call the API using a language other than PHP,
 here you'll find the little bits of information you'll need to know:
 
-You'll be asking for access tokens using "***webapp***" as your fixed clientId, 
+You'll be asking for access tokens using "***webapp***" as your fixed client_id, 
 specifying **password** as the grant type, 
 being your *company id* your **username** and your *secret* your **password**. 
 
