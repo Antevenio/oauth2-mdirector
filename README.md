@@ -113,7 +113,7 @@ The wrapper clients offer a simplified way to call the API.
 They take care of obtaining tokens and refreshing them where needed. 
 You just have to set parameters as an associative array, 
 the wrapper knows how to pass them depending on the specified method. 
-You can also specify a custom user-agent to be send on request headers 
+You can also specify a custom user-agent to be sent on request headers 
 ("*oauth2-mdirector client*" by default)
 
 Example of use:
